@@ -11,8 +11,8 @@ class logoTitle extends Component {
     return (
       <View style={{ flex: 1, flexDirection: "row" }}>
         <Image
-          source={require("../assets/spiro.png")}
-          style={{ width: 50, height: 50, opacity: 0.8 }}
+          source={require("../assets/logo.png")}
+          style={{ width: 40, height: 40, opacity: 1 }}
         />
         <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
           {this.props.title}

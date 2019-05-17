@@ -1,5 +1,8 @@
 {
   "name": "Test",
   "displayName": "Test",
-  "senderID": "ça vient de là coco"
+  "senderID": "ça vient de là coco",
+  "splash": {
+    "image": "./assets/splash-1.png"
+  }
 }

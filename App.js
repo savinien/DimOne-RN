@@ -9,6 +9,9 @@ import Notes from "./screens/Notes";
 import ConfigurationScreen from "./screens/ConfigurationScreen";
 import DefisScreen from "./screens/DefisScreen";
 import QuestionsScreen from "./screens/QuestionsScreen";
+import GroupesNewsScreen from "./screens/GroupesNewsScreen";
+import AnimationScreen from "./screens/AnimationScreen";
+import DefisDetailScreen from "./screens/DefisDetailScreen";
 
 const AppNavigator = createStackNavigator(
   {
@@ -18,7 +21,10 @@ const AppNavigator = createStackNavigator(
     Notes: Notes,
     Configuration: ConfigurationScreen,
     Defis: DefisScreen,
-    Questions: QuestionsScreen
+    Questions: QuestionsScreen,
+    GroupesNews: GroupesNewsScreen,
+    Animation: AnimationScreen,
+    DefisDetail: DefisDetailScreen
   },
   {
     initialRouteName: "Details"

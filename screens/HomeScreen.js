@@ -55,13 +55,9 @@ const styles = StyleSheet.create({
 //<Props>
 class HomeScreen extends Component {
   static navigationOptions = {
-    headerTitle: <LogoTitle title="Home screen" />,
+    headerTitle: <LogoTitle title="" />,
     headerStyle: {
-      backgroundColor: "#f4511e"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold"
+      backgroundColor: "#A80A35"
     }
   };
 
@@ -113,7 +109,11 @@ class HomeScreen extends Component {
 
   onNotif(notif) {
     console.log(notif);
-    Alert.alert(notif.title, notif.message);
+    //Alert.alert(notif.title, notif.message);
+    this.props.navigation.navigate("Animation", {
+      title: "MON DÉFI",
+      text: notif.userInfo.text
+    });
   }
 
   handlePerm(perms) {
@@ -123,6 +123,37 @@ class HomeScreen extends Component {
   navToDetail = () => {
     this.props.navigation.navigate("Details");
     console.log("Navigate to Details page");
+  };
+
+  randomDefis = () => {
+    const Defis = [
+      {
+        text: "quels moments de ma journée je peux remercier?",
+        time: 0,
+        type: "Merci"
+      },
+      {
+        text:
+          "prends quelques minutes pour identifier la dernière bonne chose qui t'est arrivée et murmure un remerciement",
+        time: 0,
+        type: "Merci"
+      },
+      {
+        text:
+          "avant de t'endormir, remonte ta journée en esprit et murmure tes remerciements pour les petits bonheurs que tu as vécus",
+        time: 0,
+        type: "Merci"
+      }
+    ];
+    Defis.forEach(defi => {
+      let time = new Date(
+        Date.now() + Math.floor(Math.random() * 60 + 1) * 60 * 1000
+      );
+      defi.time = time;
+      this.notif.scheduleNotif(defi.text, time);
+      console.log("defi: ", defi.text, "\n will be notified on", time);
+    });
+    console.log(Defis);
   };
 
   render() {
@@ -142,26 +173,19 @@ class HomeScreen extends Component {
     }
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Button
-          title="Go to Details"
-          onPress={this.navToDetail}
-          //onPress={() => this.props.navigation.navigate("Details")}
-        />
+        <Button title="back" onPress={this.navToDetail} />
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            this.notif.localNotif();
+            this.notif.localNotif(
+              "quels moments de ma journée je peux remercier?"
+            );
           }}
         >
-          <Text>Local Notification (now)</Text>
+          <Text>Lancer un défis maintenant</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            this.notif.scheduleNotif();
-          }}
-        >
-          <Text>Schedule Notification (in 30s)</Text>
+        <TouchableOpacity style={styles.button} onPress={this.randomDefis}>
+          <Text>Lancer 3 défis aléatoires dans l'heure</Text>
         </TouchableOpacity>
         <FetchLocation
           title="Get User Location"

@@ -1,22 +1,23 @@
 import React, { Component } from "react";
-import { View, Button, Text, TouchableOpacity } from "react-native";
-import LogoTitle from "../components/LogoTitle";
+import {
+  View,
+  Button,
+  Text,
+  TouchableOpacity,
+  Image,
+  ImageBackground
+} from "react-native";
+import HomeButton from "../components/HomeButton";
+import HomeTop from "../components/HomeTop";
 
 class detailsScreen extends React.Component {
   static navigationOptions = {
-    headerTitle: <LogoTitle title="Details Screen" />,
-    headerStyle: {
-      backgroundColor: "#f4511e"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold"
-    }
+    header: null
   };
 
   navToHome = () => {
     this.props.navigation.navigate("Home");
-    console.log("Navigate to Home page");
+    console.log("stay home");
   };
 
   navToScreen1 = () => {
@@ -35,7 +36,7 @@ class detailsScreen extends React.Component {
   };
 
   navToDefis = () => {
-    this.props.navigation.navigate("Defis");
+    this.props.navigation.navigate("Defis", { title: "MES DÉFIS", text: "" });
     console.log("Navigation to Defis");
   };
 
@@ -44,112 +45,90 @@ class detailsScreen extends React.Component {
     console.log("Navigation to Questions");
   };
 
+  navToGroupes = () => {
+    this.props.navigation.navigate("GroupesNews");
+    console.log("Navigation to Groupes & News");
+  };
+
   render() {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Button
-          title="Go back home"
-          //onPress={() => this.props.navigation.navigate("Home")}
-          onPress={this.navToHome}
-        />
+      <ImageBackground
+        source={require("../assets/images/fond.png")}
+        style={{ width: "100%", height: "100%" }}
+      >
         <View
           style={{
             flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: 20
+            flexDirection: "column",
+            justifyContent: "flex-start"
           }}
         >
+          <HomeTop nav={this.navToHome} />
           <View
             style={{
               flex: 1,
-              flexDirection: "column",
-              alignItems: "center"
-              //margin: 3
+              flexDirection: "row",
+              justifyContent: "space-evenly"
             }}
           >
-            <TouchableOpacity onPress={this.navToDefis}>
-              <View
-                style={{
-                  width: 160,
-                  height: 160,
-                  backgroundColor: "powderblue",
-                  margin: 3,
-                  justifyContent: "center"
-                }}
-              >
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Mes défis
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.navToNotes}>
-              <View
-                style={{
-                  width: 160,
-                  height: 160,
-                  backgroundColor: "skyblue",
-                  margin: 3,
-                  justifyContent: "center"
-                }}
-              >
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Carnets de notes
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+            <HomeButton
+              nav={this.navToGroupes}
+              imageName="groupes"
+              title="GROUPES / NEWS"
+            />
+            <HomeButton
+              nav={this.navToDefis}
+              imageName="defis"
+              title="MES DÉFIS"
+            />
           </View>
           <View
             style={{
               flex: 1,
-              flexDirection: "column",
-              //justifyContent: "center",
-              alignItems: "center",
-              margin: 3
+              flexDirection: "row"
             }}
           >
-            <TouchableOpacity onPress={this.navToQuestions}>
-              <View
-                style={{
-                  width: 160,
-                  height: 160,
-                  backgroundColor: "steelblue",
-                  justifyContent: "center",
-                  margin: 3
-                }}
-              >
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Questions
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.navToConfig}>
-              <View
-                style={{
-                  width: 160,
-                  height: 160,
-                  backgroundColor: "darkblue",
-                  margin: 3,
-                  justifyContent: "center"
-                }}
-              >
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Configuration
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+            <HomeButton
+              nav={this.navToNotes}
+              imageName="notes"
+              title="MES NOTES"
+            />
+            <HomeButton
+              nav={this.navToQuestions}
+              imageName="questions"
+              title="QUESTIONS RÉPONSES"
+            />
           </View>
+          <TouchableOpacity
+            onPress={this.navToConfig}
+            style={{
+              flex: 0.5
+            }}
+          >
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "BaronNeueBold",
+                  fontSize: 25,
+                  color: "white"
+                }}
+              >
+                MES RÉGLAGES
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      </View>
+      </ImageBackground>
     );
   }
 }
