@@ -138,7 +138,8 @@ class configurationScreen extends Component {
     //Alert.alert(notif.title, notif.message);
     this.props.navigation.navigate("Animation", {
       title: "MON DÉFI",
-      text: Platform.OS === "ios" ? notif.data.text : notif.userInfo.text
+      defi: Platform.OS === "ios" ? notif.data : notif.userInfo
+      //text: Platform.OS === "ios" ? notif.data.text : notif.userInfo.text
       //text: notif.data.text
       //text:  notif.userInfo.text
     });
@@ -148,7 +149,7 @@ class configurationScreen extends Component {
     Alert.alert("Permissions", JSON.stringify(perms));
   }
 
-  randomDefis = () => {
+  /* randomDefis = () => {
     const Defis = [
       {
         text: "quels moments de ma journée je peux remercier?",
@@ -177,23 +178,32 @@ class configurationScreen extends Component {
       console.log("defi: ", defi.text, "\n will be notified on", time);
     });
     console.log(Defis);
-  };
+  }; */
 
   scheduleDefis = () => {
     this.notif.cancelAll();
+    let scheduledDefis = [];
     console.log("scheduling defis...");
-    let numDays = 30; // can set this up to 30 days!
+    let numDays = 2; // can set this up to 30 days!
     for (i = 0; i < numDays; i++) {
       for (j = 0; j < this.state.numberOfDefis; j++) {
         //console.log("whithin second for j loop");
         let date = this.defisService.generateDefisScheduleTime(i);
         let defi = this.defisService.getRandomDefi();
         if (date) {
-          this.notif.scheduleNotif(defi.text, new Date(date.getTime()));
+          let newDefi = {
+            date: date,
+            text: defi.text,
+            done: false
+          };
+          this.notif.scheduleNotif(newDefi, new Date(date.getTime()));
+          scheduledDefis.push(newDefi);
           console.log("defi:", defi.text, ", will be scheduled at:", date);
         }
       }
     }
+    //console.log("storing scheduled defis:", scheduledDefis);
+    this.defisService.storeScheduledDefis(scheduledDefis);
   };
 
   increaseNumberOfDefis = () => {
@@ -426,17 +436,20 @@ class configurationScreen extends Component {
                   decreaseEnd={this.decreaseRestTimeEnd2}
                 />
 
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   onPress={() => {
-                    this.notif.localNotif(
-                      "quels moments de ma journée je peux remercier?"
-                    );
+                    this.notif.localNotif({
+                      text: "quels moments de ma journée je peux remercier?",
+                      date: new Date(),
+                      done: false
+                    });
                   }}
                 >
                   <Text style={styles.text}>
                     Lancer une notification maintenant
                   </Text>
                 </TouchableOpacity>
+                {/*
                 <TouchableOpacity onPress={this.randomDefis}>
                   <Text style={styles.text}>
                     Lancer trois notifications aléatoires dans l'heure

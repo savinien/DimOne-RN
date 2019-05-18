@@ -65,7 +65,7 @@ export default class NotifService {
       alertAction: "view", // (optional) default: view
       category: "", // (optional) default: null
       //data: { text: defi },
-      userInfo: { text: defi }, // (optional) default: null (object containing additional notification data)
+      userInfo: defi, // (optional) default: null (object containing additional notification data)
 
       /* iOS and Android properties */
       title: "", // (optional)
@@ -89,8 +89,8 @@ export default class NotifService {
       autoCancel: true, // (optional) default: true
       largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
       smallIcon: "ic_notification", // (optional) default: "ic_notification" with fallback for "ic_launcher"
-      bigText: "My big text that will be shown when notification is expanded", // (optional) default: "message" prop
-      subText: "This is a subText", // (optional) default: none
+      bigText: "", //"My big text that will be shown when notification is expanded", // (optional) default: "message" prop
+      //subText: "This is a subText", // (optional) default: none
       color: "blue", // (optional) default: system default
       vibrate: true, // (optional) default: true
       vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
@@ -101,7 +101,7 @@ export default class NotifService {
       /* iOS only properties */
       alertAction: "view", // (optional) default: view
       category: "", // (optional) default: null
-      userInfo: { text: defi }, // (optional) default: null (object containing additional notification data)
+      userInfo: defi, // (optional) default: null (object containing additional notification data)
 
       /* iOS and Android properties */
       title: "", // (optional)

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TouchableOpacity, Image, View } from "react-native";
+import { TouchableOpacity, Image, View, Platform } from "react-native";
 
 class homeTop extends Component {
   constructor(props) {
@@ -26,7 +26,10 @@ class homeTop extends Component {
         >
           <Image
             source={require("../assets/images/picto-oiseau.png")}
-            style={{ width: "25%", height: "80%" }}
+            style={{
+              width: "25%",
+              height: Platform.OS === "ios" ? "70%" : "80%"
+            }}
             //style={{ width: "7%", height: "60%" }}
           />
         </View>

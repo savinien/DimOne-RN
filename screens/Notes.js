@@ -9,7 +9,8 @@ import {
   ImageBackground,
   ScrollView,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Keyboard
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import HomeTop from "../components/HomeTop";
@@ -17,9 +18,9 @@ import ConfigBottomButton from "../components/ConfigBottomButton";
 
 const styles = StyleSheet.create({
   formInput: {
-    height: 200,
+    height: "80%",
     color: "darkred",
-    margin: 10
+    margin: 3
   }
 });
 
@@ -35,9 +36,50 @@ class notes extends Component {
       notes: [],
       editNote: false,
       newNote: false,
-      indexOfNote: null
+      indexOfNote: null,
+      keyBoardDisplayed: false
     };
     this.retrieveNotes();
+  }
+
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      this.keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      this.keyboardDidHide
+    );
+  }
+
+  keyboardDidShow = () => {
+    //alert("Keyboard Shown");
+    this.setState(
+      state => {
+        return { keyBoardDisplayed: true };
+      },
+      () => {
+        console.log("key board displayed");
+      }
+    );
+  };
+
+  keyboardDidHide = () => {
+    //alert("Keyboard Hidden");
+    this.setState(
+      state => {
+        return { keyBoardDisplayed: false };
+      },
+      () => {
+        console.log("key board hidden");
+      }
+    );
+  };
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   retrieveNotes = async () => {
@@ -157,12 +199,16 @@ class notes extends Component {
   displayEdition = () => {
     return (
       <View
-        style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "flex-start"
+        }}
       >
-        <KeyboardAvoidingView
+        <View
           style={{
             backgroundColor: "white",
-            opacity: 0.8
+            opacity: 0.9
           }}
         >
           <TextInput
@@ -172,19 +218,19 @@ class notes extends Component {
             value={this.state.text}
             onChangeText={text => this.setState({ text: text })}
           />
-        </KeyboardAvoidingView>
+        </View>
         <View
           style={{
-            margin: 5,
+            margin: 1,
             flexDirection: "row",
             justifyContent: "space-evenly"
           }}
         >
-          <View style={{ margin: 5 }}>
-            <Button onPress={this.saveNote} title="Save" />
+          <View style={{ margin: 1 }}>
+            <Button color="darkred" onPress={this.saveNote} title="Save" />
           </View>
-          <View style={{ margin: 5 }}>
-            <Button color="red" onPress={this.deleteNote} title="Delete" />
+          <View style={{ margin: 1 }}>
+            <Button color="darkred" onPress={this.deleteNote} title="Delete" />
           </View>
         </View>
       </View>
@@ -269,7 +315,7 @@ class notes extends Component {
 
           <View
             style={{
-              flex: 2.25,
+              flex: !this.state.keyBoardDisplayed ? 2.25 : 1,
               flexDirection: "column",
               justifyContent: "space-evenly"
             }}
@@ -282,7 +328,9 @@ class notes extends Component {
               {this.state.editNote ? this.displayEdition() : null}
             </ImageBackground>
           </View>
-          <ConfigBottomButton nav={this.navToConfig} imageName="notes" />
+          {!this.state.keyBoardDisplayed ? (
+            <ConfigBottomButton nav={this.navToConfig} imageName="notes" />
+          ) : null}
         </View>
       </ImageBackground>
     );

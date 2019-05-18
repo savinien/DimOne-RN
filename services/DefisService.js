@@ -1,9 +1,12 @@
 import AsyncStorage from "@react-native-community/async-storage";
+import { thisExpression } from "@babel/types";
 
 class defisService {
   allowedDefisTimes = [];
   restTimes = {};
   defisNumber = null;
+  todaysDefis = [];
+  scheduledDefis = [];
   /* restTimes = {
     restTimeStart1: null,
     restTimeEnd1: null,
@@ -12,8 +15,8 @@ class defisService {
   };
  */
   constructor() {
-    this.restrieveRestTimes();
-    console.log("constructor defisService", this.restTimes);
+    //this.restrieveRestTimes();
+    console.log("constructor defisService"); //, this.restTimes);
   }
 
   setDefisNumber = number => {
@@ -238,7 +241,7 @@ class defisService {
     return defi;
   };
 
-  scheduleDefis = notifFn => {
+  /* scheduleDefis = notifFn => {
     console.log("scheduling defis...");
     let numDays = 1;
     for (i = 0; i < numDays; i++) {
@@ -253,6 +256,93 @@ class defisService {
         }
       }
     }
+  }; */
+
+  storeScheduledDefis = async defis => {
+    this.scheduledDefis = [...defis];
+    try {
+      const defisToStore = JSON.stringify(defis);
+      //console.log("scheduled defis to be stored:", defisToStore);
+      await AsyncStorage.setItem("@scheduledDefis", defisToStore);
+    } catch (error) {
+      console.log("Error saving scheduled defis" + error);
+    }
+  };
+
+  retrieveTodaysDefis = async () => {
+    try {
+      const storedScheduledDefis = await AsyncStorage.getItem(
+        "@scheduledDefis"
+      );
+      let retrievedScheduledDefis = JSON.parse(storedScheduledDefis);
+      console.log("retrieved scheduled defis:", retrievedScheduledDefis);
+      if (retrievedScheduledDefis) {
+        for (i = 0; i < retrievedScheduledDefis.length; i++) {
+          let date = new Date(retrievedScheduledDefis[i].date);
+          retrievedScheduledDefis[i].date = date;
+        }
+        this.scheduledDefis = retrievedScheduledDefis;
+        let todaysDefis = this.prepareTodaysDefis(retrievedScheduledDefis);
+        //console.log("todays defis, unordered", todaysDefis);
+        todaysDefis = this.orderDefis(todaysDefis);
+        //console.log("todays defis, ordered", todaysDefis);
+        this.todaysDefis = todaysDefis;
+        return todaysDefis;
+      } else {
+        this.scheduledDefis = [];
+        this.todaysDefis = [];
+        console.log("no scheduled defis stored");
+        return this.todaysDefis;
+      }
+    } catch (error) {
+      console.log("Error retrieving scheduled defis" + error);
+    }
+  };
+
+  updateTodaysDefis = async defi => {
+    console.log("updateTodaysDefis...");
+    let updatedDefi = {
+      date: new Date(defi.date),
+      text: defi.text,
+      done: true
+    };
+    console.log("updated defis", updatedDefi);
+    this.todaysDefis = await this.retrieveTodaysDefis();
+    //this.todaysDefis[ind] = updatedDefi; // actually not needed!
+    for (i = 0; i < this.scheduledDefis.length; i++) {
+      if (this.scheduledDefis[i].date.getTime() == updatedDefi.date.getTime()) {
+        console.log("DEFI IDENTIFIED TO BE UPDATED:", defi, updatedDefi);
+        this.scheduledDefis[i] = updatedDefi;
+      }
+    }
+    try {
+      const defisToStore = JSON.stringify(this.scheduledDefis);
+      console.log("updated defis to be stored:", this.scheduledDefis);
+      await AsyncStorage.setItem("@scheduledDefis", defisToStore);
+    } catch (error) {
+      console.log("error saving updated scheduled defis");
+    }
+  };
+
+  prepareTodaysDefis = defis => {
+    let today = new Date();
+    let todaysDefis = [];
+    today.setHours(0, 0, 0, 0);
+    defis.forEach(defi => {
+      let defiDate = new Date(defi.date);
+      defiDate.setHours(0, 0, 0, 0);
+      //console.log("***", defiDate.getTime() == today.getTime());
+      if (defiDate.getTime() == today.getTime()) {
+        todaysDefis.push(defi);
+      }
+    });
+    return todaysDefis;
+  };
+
+  orderDefis = defis => {
+    let orderedDefis = [...defis];
+    orderedDefis.sort((a, b) => (a.date > b.date ? 1 : -1));
+    return orderedDefis;
   };
 }
 

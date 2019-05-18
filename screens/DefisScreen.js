@@ -5,14 +5,37 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  Image
+  Image,
+  StyleSheet
 } from "react-native";
 import HomeTop from "../components/HomeTop";
 import ConfigBottomButton from "../components/ConfigBottomButton";
+import DefisService from "../services/DefisService";
 
 class defisScreen extends Component {
   static navigationOptions = {
     header: null
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      todaysDefis: []
+    };
+    this.defisService = new DefisService();
+  }
+
+  componentDidMount = async () => {
+    console.log("about to retrieve defis");
+    let todaysDefis = await this.defisService.retrieveTodaysDefis();
+    this.setState(
+      state => {
+        return { todaysDefis: todaysDefis };
+      },
+      () => {
+        console.log("defis retrieved: ", this.state.todaysDefis);
+      }
+    );
   };
 
   navToHome = () => {
@@ -28,11 +51,11 @@ class defisScreen extends Component {
   navToDefisDetail = () => {
     const { navigation } = this.props;
     const title = navigation.getParam("title", "");
-    const text = navigation.getParam("text", "some default value");
+    const defi = navigation.getParam("defi", "some default value");
 
     this.props.navigation.navigate("DefisDetail", {
       title: title,
-      text: text
+      defi: defi
     });
     console.log("Navigate to defi detail");
   };
@@ -40,16 +63,18 @@ class defisScreen extends Component {
   displayDefis = () => {
     return (
       <View>
-        <Text
-          style={{
-            fontFamily: "BaronNeueBold",
-            fontSize: 10,
-            color: "white",
-            margin: 20
-          }}
-        >
-          Vous avez réalisé tous vos défis
-        </Text>
+        {this.state.todaysDefis.map((defi, ind) => (
+          /*           <View
+            key={ind}
+            style={{ width: "80%", height: "10%", backgroundColor: "white" }}
+          > */
+          <Text key={ind} style={style.text}>
+            {defi.done == true
+              ? defi.text
+              : "un nouveau défis vous est proposé"}
+          </Text>
+          /*           </View> */
+        ))}
       </View>
     );
   };
@@ -57,7 +82,7 @@ class defisScreen extends Component {
   displayCurrentDefi = () => {
     const { navigation } = this.props;
     const title = navigation.getParam("title", "");
-    const text = navigation.getParam("text", "some default value");
+    const defi = navigation.getParam("defi", "some default value");
     return (
       <View>
         <View
@@ -83,7 +108,7 @@ class defisScreen extends Component {
               margin: 20
             }}
           >
-            {text}
+            {defi.text}
           </Text>
         </View>
         <View
@@ -161,3 +186,12 @@ class defisScreen extends Component {
 }
 
 export default defisScreen;
+
+const style = StyleSheet.create({
+  text: {
+    fontFamily: "BaronNeueBold",
+    fontSize: 10,
+    color: "white",
+    margin: 10
+  }
+});
