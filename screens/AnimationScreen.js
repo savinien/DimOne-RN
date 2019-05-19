@@ -24,7 +24,7 @@ class animationScreen extends Component {
     const { navigation } = this.props;
     const title = navigation.getParam("title", "");
     const defi = navigation.getParam("defi", "some default value");
-    console.log("nav params:", title, defi);
+    console.log("Animation screen, nav params:", title, defi);
     /*     setTimeout(() => {
       this.setState(
         state => {

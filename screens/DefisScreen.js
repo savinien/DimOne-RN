@@ -74,15 +74,43 @@ class defisScreen extends Component {
   };
 
   editDefi = defi => {
-    console.log("editing defi");
     this.setState(
       state => {
         return { currentDefi: defi };
       },
       () => {
-        console.log("current defi to be edited:", this.state.currentDefi);
+        if (defi.done) {
+          console.log(
+            "editing defi (which has allready been done):",
+            this.state.currentDefi
+          );
+        } else {
+          console.log("editing defi (not allready done) - launching animation");
+          this.props.navigation.navigate("Animation", {
+            title: "MON DÉFI",
+            defi: defi
+          });
+        }
       }
     );
+
+    /* if (defi.done) {
+      console.log("editing defi (which has allready been done)");
+      this.setState(
+        state => {
+          return { currentDefi: defi };
+        },
+        () => {
+          console.log("current defi to be edited:", this.state.currentDefi);
+        }
+      );
+    } else {
+      console.log("editing defi (not allready done) - launching animation");
+      this.props.navigation.navigate("Animation", {
+        title: "MON DÉFI",
+        defi: defi
+      });
+    } */
   };
 
   shortenDefisText = text => {
