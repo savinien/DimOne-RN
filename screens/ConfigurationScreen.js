@@ -63,45 +63,50 @@ class configurationScreen extends Component {
   };
 
   navToHome = () => {
-    this.defisService.setRestTimes(
-      this.state.restTimeStart,
-      this.state.restTimeEnd,
-      this.state.restTimeStart2,
-      this.state.restTimeEnd2
-    );
-    this.defisService.setDefisNumber(this.state.numberOfDefis);
-    this.defisService.setAllowedDefisTimes(
-      this.state.restTimeStart,
-      this.state.restTimeEnd,
-      this.state.restTimeStart2,
-      this.state.restTimeEnd2
-    );
-    if (this.defisService.checkAllowedDefisTimes()) {
-      this.scheduleDefis();
-      this.props.navigation.navigate("Details");
-      //this.defisService.scheduleDefis(() => this.notif.localNotif());
-
-      console.log("Navigate to Home page");
-    } else {
-      Alert.alert(
-        "désactiver les défis?",
-        "les périodes 'ne pas déranger' que vous avez réglées recouvrent les 24h de votre journée",
-        [
-          {
-            text: "confimer",
-            onPress: () => {
-              console.log("Navigate to Home page");
-              this.props.navigation.navigate("Details");
-            }
-          },
-          {
-            text: "annuler",
-            onPress: () => {
-              console.log("stay on page to change defis times");
-            }
-          }
-        ]
+    if (this.state.setAlarm) {
+      this.defisService.setRestTimes(
+        this.state.restTimeStart,
+        this.state.restTimeEnd,
+        this.state.restTimeStart2,
+        this.state.restTimeEnd2
       );
+      this.defisService.setDefisNumber(this.state.numberOfDefis);
+      this.defisService.setAllowedDefisTimes(
+        this.state.restTimeStart,
+        this.state.restTimeEnd,
+        this.state.restTimeStart2,
+        this.state.restTimeEnd2
+      );
+      if (this.defisService.checkAllowedDefisTimes()) {
+        this.scheduleDefis();
+        this.props.navigation.navigate("Details");
+        //this.defisService.scheduleDefis(() => this.notif.localNotif());
+
+        console.log("Navigate to Home page");
+      } else {
+        Alert.alert(
+          "désactiver les défis?",
+          "les périodes 'ne pas déranger' que vous avez réglées recouvrent les 24h de votre journée",
+          [
+            {
+              text: "confimer",
+              onPress: () => {
+                console.log("Navigate to Home page");
+                this.props.navigation.navigate("Details");
+              }
+            },
+            {
+              text: "annuler",
+              onPress: () => {
+                console.log("stay on page to change defis times");
+              }
+            }
+          ]
+        );
+      }
+    } else {
+      this.props.navigation.navigate("Details");
+      console.log("nav to home page - without updating defis and alarms");
     }
   };
 

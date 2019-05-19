@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   ImageBackground,
   Image,
-  StyleSheet
+  StyleSheet,
+  ScrollView
 } from "react-native";
 import HomeTop from "../components/HomeTop";
 import ConfigBottomButton from "../components/ConfigBottomButton";
@@ -20,7 +21,9 @@ class defisScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todaysDefis: []
+      todaysDefis: [],
+      currentDefi: {},
+      title: ""
     };
     this.defisService = new DefisService();
   }
@@ -28,12 +31,19 @@ class defisScreen extends Component {
   componentDidMount = async () => {
     console.log("about to retrieve defis");
     let todaysDefis = await this.defisService.retrieveTodaysDefis();
+
+    const { navigation } = this.props;
+    const title = navigation.getParam("title", "");
+    const defi = navigation.getParam("defi", null);
+    console.log("DefisScreen, input nav params:", navigation.state.params);
+
     this.setState(
       state => {
-        return { todaysDefis: todaysDefis };
+        return { todaysDefis: todaysDefis, currentDefi: defi, title: title };
       },
       () => {
         console.log("defis retrieved: ", this.state.todaysDefis);
+        console.log("currentDefi", this.state.currentDefi);
       }
     );
   };
@@ -49,40 +59,73 @@ class defisScreen extends Component {
   };
 
   navToDefisDetail = () => {
-    const { navigation } = this.props;
+    /* const { navigation } = this.props;
     const title = navigation.getParam("title", "");
     const defi = navigation.getParam("defi", "some default value");
-
+ */
     this.props.navigation.navigate("DefisDetail", {
-      title: title,
-      defi: defi
+      title: this.state.title,
+      defi: this.state.currentDefi
     });
-    console.log("Navigate to defi detail");
+    console.log(
+      "Navigate to defi detail - current defi:",
+      this.state.currentDefi
+    );
+  };
+
+  editDefi = defi => {
+    console.log("editing defi");
+    this.setState(
+      state => {
+        return { currentDefi: defi };
+      },
+      () => {
+        console.log("current defi to be edited:", this.state.currentDefi);
+      }
+    );
+  };
+
+  shortenDefisText = text => {
+    let shortText = text
+      .split(" ")
+      .slice(0, 4)
+      .join(" ");
+    shortText += "...";
+    return shortText;
   };
 
   displayDefis = () => {
     return (
-      <View>
+      <ScrollView>
         {this.state.todaysDefis.map((defi, ind) => (
-          /*           <View
+          <TouchableOpacity
             key={ind}
-            style={{ width: "80%", height: "10%", backgroundColor: "white" }}
-          > */
-          <Text key={ind} style={style.text}>
-            {defi.done == true
-              ? defi.text
-              : "un nouveau défis vous est proposé"}
-          </Text>
-          /*           </View> */
+            onPress={() => this.editDefi(defi)}
+            style={{
+              justifyContent: "center",
+              width: "80%",
+              height: "15%",
+              backgroundColor: "white",
+              opacity: 0.7,
+              margin: 10
+            }}
+          >
+            <Text key={ind} style={style.text}>
+              {defi.done == true
+                ? this.shortenDefisText(defi.text)
+                : "un nouveau défis vous est proposé"}
+            </Text>
+          </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     );
   };
 
   displayCurrentDefi = () => {
-    const { navigation } = this.props;
+    /* const { navigation } = this.props;
     const title = navigation.getParam("title", "");
     const defi = navigation.getParam("defi", "some default value");
+  */
     return (
       <View>
         <View
@@ -92,12 +135,14 @@ class defisScreen extends Component {
             margin: 10
           }}
         >
-          <TouchableOpacity onPress={this.navToDefisDetail}>
-            <Image
-              source={require("../assets/images/rightarrow-icon.png")}
-              style={{ width: 50, height: 50 }}
-            />
-          </TouchableOpacity>
+          {!this.state.currentDefi.done ? (
+            <TouchableOpacity onPress={this.navToDefisDetail}>
+              <Image
+                source={require("../assets/images/rightarrow-icon.png")}
+                style={{ width: 50, height: 50 }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
         <View style={{ alignItems: "center" }}>
           <Text
@@ -108,7 +153,7 @@ class defisScreen extends Component {
               margin: 20
             }}
           >
-            {defi.text}
+            {this.state.currentDefi.text}
           </Text>
         </View>
         <View
@@ -133,10 +178,10 @@ class defisScreen extends Component {
   };
 
   render() {
-    const { navigation } = this.props;
+    /* const { navigation } = this.props;
     const title = navigation.getParam("title", "");
-    const text = navigation.getParam("text", "some default value");
-
+    const text = navigation.getParam("defi", "some default value");
+ */
     return (
       <ImageBackground
         source={require("../assets/images/fond.png")}
@@ -170,12 +215,13 @@ class defisScreen extends Component {
                     color: "white"
                   }}
                 >
-                  {title}
+                  {this.state.title}
                 </Text>
               </View>
-              <View>
-                {text ? this.displayCurrentDefi() : this.displayDefis()}
-              </View>
+              {this.state.currentDefi
+                ? this.displayCurrentDefi()
+                : this.displayDefis()}
+              {/* {defi ? this.displayCurrentDefi() : this.displayDefis()} */}
             </ImageBackground>
           </View>
           <ConfigBottomButton nav={this.navToConfig} imageName="defis" />
@@ -191,7 +237,7 @@ const style = StyleSheet.create({
   text: {
     fontFamily: "BaronNeueBold",
     fontSize: 10,
-    color: "white",
+    color: "darkred",
     margin: 10
   }
 });
