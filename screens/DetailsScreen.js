@@ -16,7 +16,7 @@ class detailsScreen extends React.Component {
   };
 
   navToHome = () => {
-    this.props.navigation.navigate("Home");
+    //this.props.navigation.navigate("Home");
     console.log("stay home");
   };
 

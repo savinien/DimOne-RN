@@ -124,28 +124,29 @@ class defisScreen extends Component {
 
   displayDefis = () => {
     return (
-      <ScrollView>
+      <View>
         {this.state.todaysDefis.map((defi, ind) => (
-          <TouchableOpacity
-            key={ind}
-            onPress={() => this.editDefi(defi)}
-            style={{
-              justifyContent: "center",
-              width: "80%",
-              height: "15%",
-              backgroundColor: "white",
-              opacity: 0.7,
-              margin: 10
-            }}
-          >
-            <Text key={ind} style={style.text}>
-              {defi.done == true
-                ? this.shortenDefisText(defi.text)
-                : "un nouveau défis vous est proposé"}
-            </Text>
+          <TouchableOpacity key={ind} onPress={() => this.editDefi(defi)}>
+            <View
+              key={ind}
+              style={{
+                justifyContent: "center",
+                width: 250,
+                height: 20,
+                backgroundColor: "white",
+                opacity: 0.7,
+                margin: 10
+              }}
+            >
+              <Text key={ind} style={style.text}>
+                {defi.done == true
+                  ? this.shortenDefisText(defi.text)
+                  : "un nouveau défis vous est proposé"}
+              </Text>
+            </View>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
     );
   };
 
@@ -249,7 +250,6 @@ class defisScreen extends Component {
               {this.state.currentDefi
                 ? this.displayCurrentDefi()
                 : this.displayDefis()}
-              {/* {defi ? this.displayCurrentDefi() : this.displayDefis()} */}
             </ImageBackground>
           </View>
           <ConfigBottomButton nav={this.navToConfig} imageName="defis" />

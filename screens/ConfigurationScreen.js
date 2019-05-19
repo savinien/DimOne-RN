@@ -440,7 +440,7 @@ class configurationScreen extends Component {
                   increaseEnd={this.increaseRestTimeEnd2}
                   decreaseEnd={this.decreaseRestTimeEnd2}
                 />
-
+                {/*
                 <TouchableOpacity
                   onPress={() => {
                     this.notif.localNotif({
@@ -454,7 +454,7 @@ class configurationScreen extends Component {
                     Lancer une notification maintenant
                   </Text>
                 </TouchableOpacity>
-                {/*
+                
                 <TouchableOpacity onPress={this.randomDefis}>
                   <Text style={styles.text}>
                     Lancer trois notifications aléatoires dans l'heure

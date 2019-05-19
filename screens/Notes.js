@@ -21,6 +21,12 @@ const styles = StyleSheet.create({
     height: "80%",
     color: "darkred",
     margin: 3
+  },
+  text: {
+    fontFamily: "BaronNeueBold",
+    fontSize: 10,
+    color: "darkred",
+    margin: 10
   }
 });
 
@@ -135,12 +141,14 @@ class notes extends Component {
  */
   };
 
-  deleteNote = async ind => {
+  deleteNote = async () => {
     let currentNotes = [...this.state.notes];
-    //console.log("current notes before deletion:", currentNotes);
-    currentNotes.splice(ind, 1);
-    //console.log("current notes after deletion:", currentNotes);
-    this.setState({ notes: currentNotes });
+    console.log("current notes before deletion:", currentNotes);
+    currentNotes.splice(this.state.indexOfNote, 1);
+    console.log("current notes after deletion:", currentNotes);
+    this.setState(state => {
+      return { notes: currentNotes };
+    });
     let noteToStore = JSON.stringify(currentNotes);
     try {
       await AsyncStorage.setItem("@notes", noteToStore);
@@ -161,7 +169,8 @@ class notes extends Component {
           editNote: true,
           newNote: true,
           indexOfNote: ind,
-          notes: currentNotes
+          notes: currentNotes,
+          text: "Entrer votre texte ici..."
         };
       },
       () => {
@@ -237,6 +246,15 @@ class notes extends Component {
     );
   };
 
+  shortenText = text => {
+    let shortText = text
+      .split(" ")
+      .slice(0, 4)
+      .join(" ");
+    shortText += "...";
+    return shortText;
+  };
+
   displayNotes = () => {
     return (
       <View style={{ alignItems: "center" }}>
@@ -249,21 +267,39 @@ class notes extends Component {
         >
           MES NOTES
         </Text>
+        <View>
+          <TouchableOpacity onPress={this.addNote}>
+            <Image
+              source={require("../assets/images/add-icon.png")}
+              style={{ width: 50, height: 50 }}
+            />
+          </TouchableOpacity>
+        </View>
         <ScrollView>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <TouchableOpacity onPress={this.addNote}>
-              <Image
-                source={require("../assets/images/add-icon.png")}
-                style={{ width: 50, height: 50 }}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ margin: 20 }}>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "flex-start"
+            }}
+          >
             {this.state.notes.map((text, ind) => (
               <TouchableOpacity key={ind} onPress={() => this.editNote(ind)}>
-                <Text key={ind} style={{ margin: 3 }}>
-                  {text}
-                </Text>
+                <View
+                  key={ind}
+                  style={{
+                    justifyContent: "center",
+                    width: 250,
+                    height: 20,
+                    backgroundColor: "white",
+                    opacity: 0.7,
+                    margin: 10
+                  }}
+                >
+                  <Text key={ind} style={styles.text}>
+                    {this.shortenText(text)}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
@@ -324,8 +360,9 @@ class notes extends Component {
               source={require("../assets/images/mesnotes-backgnd.png")}
               style={{ width: "100%", height: "100%" }}
             >
-              {this.state.editNote ? null : this.displayNotes()}
-              {this.state.editNote ? this.displayEdition() : null}
+              {this.state.editNote
+                ? this.displayEdition()
+                : this.displayNotes()}
             </ImageBackground>
           </View>
           {!this.state.keyBoardDisplayed ? (
