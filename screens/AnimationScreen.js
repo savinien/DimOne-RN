@@ -70,7 +70,7 @@ class animationScreen extends Component {
         style={{ width: "100%", height: "100%" }}
       >
         <Video
-          source={require("../assets/video/animation-with-sound.mp4")}
+          source={require("../assets/video/animation-with-sound-light.mp4")}
           /*           ref={ref => {
             this.player = ref;
           }} */

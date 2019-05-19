@@ -4,5 +4,8 @@
   "senderID": "ça vient de là coco",
   "splash": {
     "image": "./assets/splash-1.png"
+  },
+  "android": {
+    "package": "com.brightweb.mapetitevoie"
   }
 }
